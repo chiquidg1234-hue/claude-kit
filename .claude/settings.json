@@ -1,0 +1,24 @@
+{
+  "extraKnownMarketplaces": {
+    "mi-kit":                  { "source": { "source": "github", "repo": "CAMBIAR_USUARIO/claude-kit" } },
+    "caveman":                 { "source": { "source": "github", "repo": "JuliusBrussee/caveman" } },
+    "superpowers-marketplace": { "source": { "source": "github", "repo": "obra/superpowers-marketplace" } },
+    "claude-video":            { "source": { "source": "github", "repo": "bradautomates/claude-video" } },
+    "claude-plugins-official": { "source": { "source": "github", "repo": "anthropics/claude-plugins-official" } },
+    "ruflo":                   { "source": { "source": "github", "repo": "ruvnet/ruflo" } }
+  },
+  "enabledPlugins": {
+    "mi-kit@mi-kit": true,
+    "caveman@caveman": true,
+    "superpowers@superpowers-marketplace": true,
+    "watch@claude-video": true,
+    "claude-code-setup@claude-plugins-official": true,
+    "playwright@claude-plugins-official": true,
+    "context7@claude-plugins-official": true,
+    "firecrawl@claude-plugins-official": true,
+    "ruflo-core@ruflo": true
+  },
+  "permissions": {
+    "deny": ["Bash(rm -rf /*)", "Bash(git push --force*)"]
+  }
+}

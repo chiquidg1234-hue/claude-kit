@@ -1,0 +1,11 @@
+{
+  "name": "mi-kit",
+  "owner": { "name": "chiqui" },
+  "plugins": [
+    {
+      "name": "mi-kit",
+      "source": "./plugins/mi-kit",
+      "description": "Mi configuración: MCP de Apify y skill 'ojos' (cómo ver webs y videos)."
+    }
+  ]
+}
