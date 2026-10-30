@@ -16,7 +16,8 @@ Lo que cambias aquí lo reciben todas las sesiones.
 | 🤖 Equipo de agentes | `ruflo-core` |
 
 ## Instalar
-- **Laptop / PC (terminal):** `git clone` este repo y luego `bash instalar.sh`.
+- **Laptop / PC (terminal):** `git clone https://github.com/chiquidg1234-hue/claude-kit && cd claude-kit && bash instalar.sh`
+- **Solo el plugin propio:** `/plugin install mi-kit --marketplace chiquidg1234-hue/claude-kit`
 - **Sesiones en la nube y cualquier proyecto:** copia `.claude/settings.json` al repo del proyecto. Claude Code instala y activa lo que diga ahí.
 
 ## Control

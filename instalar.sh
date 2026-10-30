@@ -4,7 +4,7 @@
 #       bash instalar.sh --quitar ruflo-core@ruflo   (desinstalar uno)
 set -e
 if [ "$1" = "--quitar" ]; then claude plugin uninstall "$2" --scope user; exit; fi
-REPO="${KIT_REPO:-CAMBIAR_USUARIO/claude-kit}"
+REPO="${KIT_REPO:-chiquidg1234-hue/claude-kit}"
 for m in "$REPO" JuliusBrussee/caveman obra/superpowers-marketplace bradautomates/claude-video anthropics/claude-plugins-official ruvnet/ruflo; do
   claude plugin marketplace add "$m" || true
 done
