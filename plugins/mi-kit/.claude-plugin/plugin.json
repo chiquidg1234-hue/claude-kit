@@ -1,5 +1,5 @@
 {
   "name": "mi-kit",
-  "version": "0.1.0",
-  "description": "MCP de Apify + skill 'ojos'. Las keys se leen de variables de entorno, nunca se guardan aquí."
+  "version": "0.2.0",
+  "description": "MCP de Apify + skills 'ojos' y 'video-maniqui'. Las keys se leen de variables de entorno, nunca se guardan aquí."
 }

@@ -9,6 +9,7 @@ Lo que cambias aquí lo reciben todas las sesiones.
 | 👀 Ver videos | `watch` (claude-video) |
 | 👀 Ver/usar webs | `agent-browser` (Vercel), `playwright` |
 | 🔎 Buscar en TikTok | MCP `apify` (en `mi-kit`) |
+| 🎬 Hacer shorts 3D tipo maniquí | skill `video-maniqui` (en `mi-kit`) |
 | 🕷️ Leer webs enteras | `firecrawl` |
 | 📚 Docs actualizadas | `context7` |
 | 💸 Menos tokens | `caveman` |

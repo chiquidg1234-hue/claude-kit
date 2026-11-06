@@ -1,0 +1,10 @@
+{
+  "name": "video-maniqui",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "three": "0.170.0",
+    "@fontsource/montserrat": "5.1.0",
+    "@fontsource/playfair-display": "5.1.0"
+  }
+}
