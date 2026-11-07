@@ -109,14 +109,14 @@ export function createEngine(canvas) {
   function part(name, geo, mat, mult, colored) { const m = new THREE.InstancedMesh(geo, mat, MAXF * mult); m.castShadow = true; m.receiveShadow = true; m.frustumCulled = false; if (colored) m.instanceColor = new THREE.InstancedBufferAttribute(new Float32Array(MAXF * mult * 3).fill(1), 3); scene.add(m); parts[name] = { mesh: m, n: 0 }; }
   const cap = (r, l) => new THREE.CapsuleGeometry(r, l, 5, 10);
   part('pelvis', SPH, M.dyed, 1, true); part('chest', SPH, M.dyed, 1, true); part('neck', new THREE.CylinderGeometry(.05, .06, .14, 10), M.wood, 1);
-  part('head', SPH, M.wood, 1); part('uarm', cap(.058, .24), M.dyed, 2, true); part('farm', cap(.046, .22), M.wood, 2);
+  part('head', SPH, M.wood, 1); part('nose', SPH, M.wood, 1); part('uarm', cap(.058, .24), M.dyed, 2, true); part('farm', cap(.046, .22), M.wood, 2);
   part('hand', SPH, M.wood, 2); part('thigh', cap(.078, .34), M.dyed, 2, true); part('shin', cap(.06, .34), M.wood, 2);
   part('foot', new THREE.BoxGeometry(.1, .07, .25), M.joint, 2); part('joint', SPH, M.joint, 9);
   part('belt', new THREE.BoxGeometry(.06, .62, .02), M.flat, 2, true);
   part('musket', new THREE.CylinderGeometry(.017, .022, 1.45, 6), M.darkwood, 1);
   part('bayonet', new THREE.ConeGeometry(.012, .38, 4), M.metal, 1);
   const bic = () => { const g = new THREE.CylinderGeometry(.2, .2, .07, 24, 1, false, 0, Math.PI); g.rotateX(Math.PI / 2); g.rotateZ(Math.PI / 2); return g; };
-  part('bicorne', (() => { const g = bic(); g.scale(.95, .72, .45); return g; })(), M.flat, 1, true);
+  part('bicorne', (() => { const g = bic(); g.scale(.8, .6, .42); return g; })(), M.flat, 1, true);
   part('bicorneW', (() => { const g = bic(); g.rotateY(Math.PI / 2); g.scale(.45, .72, .9); return g; })(), M.flat, 1, true);
   part('shako', new THREE.CylinderGeometry(.11, .095, .21, 16), M.flat, 1, true);
   part('bearskin', (() => { const g = new THREE.CylinderGeometry(.115, .1, .4, 14); g.scale(1, 1, .92); return g; })(), M.flat, 1, true);
@@ -128,11 +128,11 @@ export function createEngine(canvas) {
   part('hleg', cap(.06, .75), M.wood, 4); part('hjoint', SPH, M.joint, 4); part('htail', cap(.05, .5), M.joint, 1); part('hmane', new THREE.BoxGeometry(.05, .55, .1), M.joint, 1);
 
   const O = () => new THREE.Object3D();
-  const R = { root: O(), hips: O(), spine: O(), chest: O(), neck: O(), head: O(), hat: O(), plate: O(), musket: O(), bayo: O(), sh: [O(), O()], el: [O(), O()], hand: [O(), O()], hip: [O(), O()], kn: [O(), O()], ank: [O(), O()],
+  const R = { nose: O(), root: O(), hips: O(), spine: O(), chest: O(), neck: O(), head: O(), hat: O(), plate: O(), musket: O(), bayo: O(), sh: [O(), O()], el: [O(), O()], hand: [O(), O()], hip: [O(), O()], kn: [O(), O()], ank: [O(), O()],
     pelvisM: O(), chestM: O(), neckM: O(), headM: O(), uaM: [O(), O()], faM: [O(), O()], handM: [O(), O()], thM: [O(), O()], shM: [O(), O()], footM: [O(), O()], belt: [O(), O()], ep: [O(), O()] };
   R.root.add(R.hips); R.hips.position.y = 1.0; R.hips.add(R.pelvisM); R.pelvisM.scale.set(.17, .12, .12);
   R.hips.add(R.spine); R.spine.add(R.chest); R.chest.position.y = .32; R.chest.add(R.chestM); R.chestM.scale.set(.2, .27, .13); R.chestM.position.y = .02;
-  R.chest.add(R.neck); R.neck.position.y = .3; R.neck.add(R.neckM); R.neckM.position.y = .04; R.neck.add(R.head); R.head.position.y = .17; R.head.add(R.headM); R.headM.scale.set(.1, .13, .11);
+  R.chest.add(R.neck); R.neck.position.y = .3; R.neck.add(R.neckM); R.neckM.position.y = .04; R.neck.add(R.head); R.head.position.y = .17; R.head.add(R.headM); R.headM.scale.set(.1, .13, .11); R.head.add(R.nose); R.nose.position.set(0, -.005, .1); R.nose.scale.set(.022, .045, .035);
   R.head.add(R.hat); R.hat.position.y = .13; R.hat.add(R.plate); R.chest.add(R.musket); R.musket.add(R.bayo); R.bayo.position.y = .9;
   for (const s of [0, 1]) { const sg = s ? 1 : -1;
     R.chest.add(R.belt[s]); R.belt[s].position.set(0, .02, .12); R.belt[s].rotation.set(-.12, 0, sg * .62);
@@ -183,7 +183,7 @@ export function createEngine(canvas) {
     if (mk === 'charge') { R.sh[1].rotation.set(-0.9, 0, -.1); R.el[1].rotation.set(-0.9, 0, 0); R.sh[0].rotation.set(-1.25, 0, .3); R.el[0].rotation.set(-.3, 0, 0); R.musket.position.set(.05, .05, .45); R.musket.rotation.set(1.35, 0, 0); }
     if (mk === 'aim') { R.sh[1].rotation.set(-1.4 + rk * .35, 0, -.1); R.el[1].rotation.set(-.5, 0, 0); R.sh[0].rotation.set(-1.45 + rk * .3, 0, .55); R.el[0].rotation.set(-.15, 0, 0); R.musket.position.set(.03, .32, .55 - rk * .12); R.musket.rotation.set(Math.PI / 2 + rk * .35, 0, 0); R.head.rotation.set(.12, 0.25, 0); }
     const T = TEAM[p.team || 'wood'];
-    put('pelvis', R.pelvisM, T.legs); put('chest', R.chestM, T.coat); put('neck', R.neckM); put('head', R.headM);
+    put('pelvis', R.pelvisM, T.legs); put('chest', R.chestM, T.coat); put('neck', R.neckM); put('head', R.headM); put('nose', R.nose);
     for (const sd of [0, 1]) { put('uarm', R.uaM[sd], T.coat); put('farm', R.faM[sd]); put('hand', R.handM[sd]); put('thigh', R.thM[sd], T.legs); put('shin', R.shM[sd]); put('foot', R.footM[sd]);
       for (const j of [R.sh[sd], R.el[sd], R.hip[sd], R.kn[sd]]) put('joint', j, null, [.07, .07, .07]);
       if (T.belt) put('belt', R.belt[sd], T.belt);
@@ -280,10 +280,10 @@ export function createEngine(canvas) {
     fragmentShader: `#include <packing>
       uniform sampler2D tDiffuse, tDepth; uniform float focus, aperture, maxblur, near, far; varying vec2 vUv;
       float vz(vec2 uv){ return -perspectiveDepthToViewZ(texture2D(tDepth, uv).x, near, far); }
-      void main(){ float z = vz(vUv); float coc = clamp(abs(z - focus) / z * aperture * 900., 0., maxblur);
+      void main(){ float z = vz(vUv); float coc = clamp(abs(z - focus) / z * aperture * 600., 0., maxblur);
         vec2 r = vec2(coc * .5625, coc); vec4 acc = texture2D(tDiffuse, vUv); float wsum = 1.;
         for (int i = 0; i < 10; i++) { float a = float(i) * 2.39996; float rr = sqrt(float(i) + .5) / 3.2; vec2 o = vec2(cos(a), sin(a)) * rr * r;
-          float zs = vz(vUv + o); float w = zs < z ? 1. : clamp(abs(zs - focus) / zs * aperture * 900. / max(coc, 1e-4), 0., 1.);
+          float zs = vz(vUv + o); float w = zs < z ? 1. : clamp(abs(zs - focus) / zs * aperture * 600. / max(coc, 1e-4), 0., 1.);
           acc += texture2D(tDiffuse, vUv + o) * w; wsum += w; }
         gl_FragColor = acc / wsum; }` });
   composer.addPass(bokeh);
@@ -337,7 +337,9 @@ export function createEngine(canvas) {
     rim.target.position.copy(tgt); rim.position.copy(tgt).add(V(-skyU.sunDir.value.x * 50, 25, -skyU.sunDir.value.z * 50));
   }
   function render(T, post = {}) { flagU.t.value = T; grade.uniforms.time.value = Math.floor(T * 30); grade.uniforms.whip.value.set(post.whipX || 0, post.whipY || 0); grade.uniforms.flash.value = post.flash || 0; grade.uniforms.fade.value = post.fade || 0; grade.uniforms.grain.value = post.grain ?? .05; grade.uniforms.vig.value = post.vig ?? .45; grade.uniforms.ca.value = post.ca ?? .0015;
-    bloom.strength = post.bloom ?? .35; composer.render(); }
+    bloom.strength = post.bloom ?? .35;
+    // el RenderPass pinta en readBuffer, que alterna entre frames según cuántos pases hacen swap: leer SU profundidad
+    bokeh.uniforms.tDepth.value = composer.readBuffer.depthTexture; composer.render(); }
   function project(x, y, z) { const v = V(x, y, z).project(cam); return [(v.x + 1) / 2 * W, (1 - v.y) / 2 * H, v.z < 1]; }
   // formación: filas x columnas centradas en cx,cz
   function block(cx, cz, rows, cols, dx, dz, fn) { const out = []; for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) { const i = r * cols + c; const o = fn(cx + (c - (cols - 1) / 2) * dx + (hash(i * 3.1 + cx) - .5) * 0.22, cz + r * dz + (hash(i * 7.7 + cz) - .5) * 0.22, i, r, c); if (o) out.push(o); } return out; }

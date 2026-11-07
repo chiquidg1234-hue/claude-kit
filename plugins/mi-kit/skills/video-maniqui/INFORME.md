@@ -63,3 +63,45 @@ Referencia viral (kelano86, cth9191): 20–30+ cortes/min, algo nuevo cada 2–4
 | 11 | Escenas que no se leen a tamaño de celular | Planos aéreos con figuras de 10 px | Regla: lo importante ≥ 100 px; vistas aéreas solo con etiquetas grandes | Medio | Bajo |
 | 12 | Zonas seguras sin comprobar | Diseño a ojo | Contenido en x 60–940, y 250–1500; subtítulos ≤ y 1500 | Bajo | Bajo |
 | 13 | Voz robótica en español | Piper es_MX | v2 en inglés: probar Kokoro y Piper y elegir con Whisper | Medio | Bajo |
+
+## Fase 3. Plan v2 y resultado
+
+Orden aplicado (impacto/esfuerzo): 1) gancho, final con pregunta y loop, subtítulos con Whisper;
+2) ritmo de cortes, audio en capas, cámara, post-proceso; 3) animación, escala, detalle.
+
+**Voz (decidido rápido):** probé Kokoro `am_michael`, `bm_george`, `am_onyx` y Piper `ljspeech`, y evalué con Whisper.
+Gana Kokoro `am_michael` (confianza 0.965, tono grave, Apache-2.0) a 1.12×. Descarté Piper `ryan` por licencia **no comercial**.
+
+**Datos verificados:** bajas ≈ 15,000 (Wellington) + 8,000 (Blücher) + 25,000 franceses muertos y heridos (Britannica) → "nearly 50,000 killed or wounded";
+lluvia nocturna y ataque hacia las 11:30; ningún cuadro británico roto por la caballería; prusianos por el flanco (Plancenoit) por la tarde;
+la Guardia rechazada y el grito "La Garde recule!"; abdicación el 22 de junio (4 días después); muerte en Santa Elena en 1821.
+
+| Métrica | v1 | v2 |
+|---|---|---|
+| Frame 0 | negro | imagen + "50,000" |
+| Cortes por minuto | 7.5 | 31.6 (30 planos, ninguno > 4 s) |
+| Subtítulos | estimados | palabra a palabra (Whisper); desfase medio 64 ms vs lo que se oye en la mezcla |
+| Inteligibilidad (Whisper sobre la mezcla final) | — | 94% de palabras (100% en la voz sola salvo formato) |
+| Loudness | −17.3 LUFS, LRA 2.5 | −14.2 LUFS, TP −1.2 dBTP |
+| Música | 1 drone + redoble sintético | partitura con samples CC0 (cellos, violines, trompa, trombón, tuba, timbales, bombo, caja) por secciones |
+| Efectos | 4 tipos | 30+ cues en el reloj de la imagen (cañón en capas, voleas, cascos, pasos, multitud, lluvia, trueno, olas, latido, whooshes, risers) |
+| Silencio antes del clímax | no | música a −39 dB y luego el golpe del clímax |
+| Final | texto + fundido | pregunta "¿Wellington o Blücher?" + vuelve al primer plano (loop) |
+
+**Errores encontrados por la revisión (y corregidos):** cámara sin la altura del terreno (encuadraba caderas); bucle infinito en la
+partitura por redondeo; efectos encima de palabras ("flank" → "flag"); el título era más fuerte que el clímax; un plano final de 4.9 s;
+profundidad de campo que dejaba **negros** los frames alternos (el buffer de profundidad alterna entre frames); maniquíes sin cara
+que no se sabe si van o vienen (se añadió una nariz); renderizar en paralelo no acelera con GPU por software.
+
+**Fuentes de audio:** samples VSCO 2 CE (CC0 1.0, Versilian Studios); todos los efectos sintetizados en `score.py`; voz Kokoro-82M (Apache-2.0).
+
+## Lo que NO pude comprobar
+- **Cómo suena de verdad:** no puedo escuchar. Medí loudness, picos, secciones y lo que entiende Whisper, pero la calidad musical,
+  lo natural de la voz y si los efectos sintetizados (multitud, gritos) suenan creíbles los tiene que juzgar un oído humano.
+- **Pronunciación de Blücher:** escribí "Blooker"; Whisper oye "Blucker/Booker". El subtítulo dice "Blücher".
+- **"flank"** en la mezcla: Whisper oye "flat" aunque en la voz sola se entiende.
+- **Rendimiento en TikTok:** ninguna métrica de vistas o retención; las reglas de ritmo vienen de repos de terceros, no de datos propios.
+- **Cifras de ingresos** de los posts ($600–3,000/mes, millones de vistas): sin pruebas.
+- **Repos de @theoxmotion** (3) y los formatos 1–5 y 10: solo conocidos por el resumen del post.
+- **Videos de YouTube/TikTok** citados: no los vi (instrucción del usuario).
+- **Windows:** el pipeline v2 solo está probado en Linux.
