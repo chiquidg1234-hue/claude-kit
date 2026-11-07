@@ -15,7 +15,7 @@ export function buildEpisode(E, WORDS) {
     golden: { top: 0x6a7ea0, hor: 0xe8b07a, fog: [30, 170], sunDir: [-.8, .22, -.3], sunCol: 0xffb36a, sunI: 2.8, hemiI: .8, cloud: .5, exposure: 1.02, highTint: [.1, .04, -.03], rimI: .5 },
     battle: { top: 0x8a8070, hor: 0xb9a184, fog: [16, 120], sunDir: [-.7, .3, -.5], sunCol: 0xffbd7a, sunI: 2.5, hemiI: .85, cloud: .8, exposure: .98, sat: .92, highTint: [.08, .03, -.03] },
     dusk: { top: 0x2c3550, hor: 0xc07a58, fog: [25, 150], sunDir: [-.9, .07, .2], sunCol: 0xff8a50, sunI: 2.2, hemiI: .55, hemiSky: 0x7080a8, cloud: .6, exposure: 1.0, sat: .9, highTint: [.1, .02, -.02], rimI: .8 },
-    night: { top: 0x0c1220, hor: 0x2a3550, fog: [40, 300], sunDir: [.6, .35, -.6], sunCol: 0x9db4e0, sunI: 1.3, hemiI: .35, hemiSky: 0x5068a0, cloud: .35, exposure: 1.05, sat: .8, shadowTint: [0, .02, .08], highTint: [0, .02, .06] },
+    night: { top: 0x101a30, hor: 0x40507a, fog: [40, 300], sunDir: [.6, .35, .6], sunCol: 0xb8c8f0, sunI: 2.4, hemiI: .7, hemiSky: 0x6078b0, cloud: .35, exposure: 1.25, rimI: 1.0, sat: .8, shadowTint: [0, .02, .08], highTint: [0, .02, .06] },
   };
   const { figure, horse, cannon, flag, puff, dust, spark, muzzle, block, hgt, kick, fovPunch } = E;
 
@@ -110,10 +110,10 @@ export function buildEpisode(E, WORDS) {
       return { clock: lerp(6, 11.5, easeInOut(t / d)) }; } });
   // 12. Time-lapse: el sol cruza, sombras barren
   shot('timelapse', wt('rain', 'lost') - 0.05, { look: 'day', trans: 'whip', sfx: [[0, 'whoosh', .5, 0], [0, 'tick_fast', .6, 0]],
-    fn: (t, d, T, L) => { E.env({ farmPos: [2, 2] }); const k = t / d;
+    fn: (t, d, T, L) => { E.env({ farmPos: [-40, -40] }); const k = t / d;
       L.sunDir = [lerp(.8, -.6, k), lerp(.15, .6, Math.sin(k * Math.PI)), lerp(-.2, -.4, k)]; L.cloud = .6; E.look(L);
-      block(-2, -8, 3, 10, 1.25, -1.3, (x, z, i) => ({ x, z, ry: 0, team: 'fr', hat: 'shako', musket: 'shoulder', t, id: 70 + i })).forEach(figure);
-      E.camera(14, 9, 16, 0, 0, -2, 38, null, T); return { clockText: k > .55 ? '11:30' : null }; } });
+      block(0, -2, 4, 8, 1.25, -1.3, (x, z, i) => ({ x, z, ry: 0, team: 'fr', hat: 'shako', musket: 'shoulder', headY: (hash(i) - .5) * .8, t, id: 70 + i })).forEach(figure);
+      flag({ team: 'fr', x: 2, z: -4 }); E.camera(6, 4.5, 7, 0, 1, -4, 38, null, T); return { clockText: k > .55 ? '11:30' : null }; } });
   // 13. Carga de caballería hacia cámara
   shot('charge', lineA('cavalry') - 0.1, { look: 'battle', trans: 'whip', sfx: [[0, 'whoosh', .6, 0], [0, 'hooves', 1.0, 0], [.2, 'charge_yell', .6, 0]],
     fn: (t, d, T) => { E.env({ farm: false }); const st = t * .55;
@@ -213,7 +213,7 @@ export function buildEpisode(E, WORDS) {
   shot('helena', wt('exile', 'he') - 0.05, { look: 'night', trans: 'whip', sfx: [[0, 'whoosh', .4, 0], [0, 'waves', .9, 0]],
     fn: (t, d, T) => { E.env({ sea: true, island: true, farm: false, ground: false }); E.island.position.set(0, -.5, 0);
       figure({ x: 0, y: 2.75, z: 0, ry: -0.6, team: 'nap', hat: 'bicorne', headP: .3, t, id: 1, look: 0 });
-      const k = easeOut(t / d); E.camera(lerp(2.2, 9, k), lerp(3.8, 7.5, k), lerp(4, 14, k), 0, lerp(3.9, 3.0, k), 0, 34, { focus: lerp(4.2, 15, k), ap: .0006 }, T); } });
+      const k = easeOut(t / d); E.camera(lerp(1.6, 6, k), lerp(4.0, 6.0, k), lerp(3.2, 9, k), 0, lerp(4.0, 3.4, k), 0, 34, { ap: .0006 }, T); } });
   // 26-29. Pregunta final en 4 planos (sin "dead beats") + vuelta al inicio (loop)
   const duel = (t, d, T, camF) => { E.env({ farm: false });
     horse({ x: -1.6, z: 0, ry: .45, rider: { team: 'well', hat: 'bicorneW' }, t, id: 2 });
