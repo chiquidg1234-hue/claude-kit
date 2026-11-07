@@ -1,5 +1,5 @@
 motor/node_modules
-episodios/*/frames/
+episodios/*/frames*/
 episodios/*/audio/
 episodios/*/export.json
 episodios/*/words.json
