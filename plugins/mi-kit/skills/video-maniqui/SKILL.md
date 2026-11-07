@@ -47,7 +47,9 @@ Necesita node 18+, python 3.11+, ffmpeg, git y espeak-ng. Luego: `export VIDEO_T
 - **Lo importante ≥ 100 px**; contenido en x 60–940, y 250–1500; subtítulos ≥ 80 px con borde.
 - **Sonido:** un efecto por acción; whoosh centrado en el corte; nada fuerte encima de una palabra clave
   (un impacto sobre "flank" hizo que Whisper oyera "flag"): pon el golpe justo **después** de la palabra.
-  Silencio (≈ −38 dB de música) antes del clímax y el clímax como momento más fuerte. Master −14 LUFS, TP ≤ −1 dBTP.
+  Silencio (≈ −40 dB de música) antes del clímax y el clímax entre lo más fuerte. Master −14 LUFS a **−2.5 dBTP**:
+  el AAC sube el pico ~2 dB (medido: un WAV a −1.2 quedó a +1.6 dBFS en el MP4). Mide siempre el MP4 final, no el WAV.
+- **Mira frames después de cada cambio del motor** (un cambio de rendimiento dejó negros los frames alternos y solo se vio en la imagen).
 - **Samples VSCO:** sus nombres van una octava abajo (comprobado por análisis espectral: +12 consistente).
 - **Render:** ~0.7 frames/s con GPU por software; más procesos no aceleran (CPU saturada). Con GPU real, mucho más.
 - **Voz:** Kokoro `am_michael` a 1.12×. Piper `ryan` es CC BY-NC-SA (no comercial): no usar para monetizar.

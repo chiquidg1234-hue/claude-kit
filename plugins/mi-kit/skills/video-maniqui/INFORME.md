@@ -80,9 +80,9 @@ la Guardia rechazada y el grito "La Garde recule!"; abdicación el 22 de junio (
 |---|---|---|
 | Frame 0 | negro | imagen + "50,000" |
 | Cortes por minuto | 7.5 | 31.6 (30 planos, ninguno > 4 s) |
-| Subtítulos | estimados | palabra a palabra (Whisper); desfase medio 64 ms vs lo que se oye en la mezcla |
-| Inteligibilidad (Whisper sobre la mezcla final) | — | 94% de palabras (100% en la voz sola salvo formato) |
-| Loudness | −17.3 LUFS, LRA 2.5 | −14.2 LUFS, TP −1.2 dBTP |
+| Subtítulos | estimados | palabra a palabra (Whisper); desfase medio 67 ms vs lo que se oye en el MP4 |
+| Inteligibilidad (Whisper sobre el MP4 final) | — | 95.7% de palabras (lo que falla es formato: "18"→"18th", o la pronunciación de Blücher) |
+| Loudness (MP4 final) | −17.3 LUFS, LRA 2.5 | −14.5 LUFS; pico −1.7 dBFS (ligero) / −0.2 dBFS (HQ) |
 | Música | 1 drone + redoble sintético | partitura con samples CC0 (cellos, violines, trompa, trombón, tuba, timbales, bombo, caja) por secciones |
 | Efectos | 4 tipos | 30+ cues en el reloj de la imagen (cañón en capas, voleas, cascos, pasos, multitud, lluvia, trueno, olas, latido, whooshes, risers) |
 | Silencio antes del clímax | no | música a −39 dB y luego el golpe del clímax |
@@ -90,7 +90,7 @@ la Guardia rechazada y el grito "La Garde recule!"; abdicación el 22 de junio (
 
 **Errores encontrados por la revisión (y corregidos):** cámara sin la altura del terreno (encuadraba caderas); bucle infinito en la
 partitura por redondeo; efectos encima de palabras ("flank" → "flag"); el título era más fuerte que el clímax; un plano final de 4.9 s;
-profundidad de campo que dejaba **negros** los frames alternos (el buffer de profundidad alterna entre frames); maniquíes sin cara
+el AAC subía el pico a **+1.6 dBFS** (saturaba) aunque el WAV estaba a −1.2: ahora el master va a −2.5 dBTP; time-lapse tapado por una granja y Santa Elena casi negra (re-renderizados); profundidad de campo que dejaba **negros** los frames alternos (el buffer de profundidad alterna entre frames); maniquíes sin cara
 que no se sabe si van o vienen (se añadió una nariz); renderizar en paralelo no acelera con GPU por software.
 
 **Fuentes de audio:** samples VSCO 2 CE (CC0 1.0, Versilian Studios); todos los efectos sintetizados en `score.py`; voz Kokoro-82M (Apache-2.0).
@@ -99,7 +99,7 @@ que no se sabe si van o vienen (se añadió una nariz); renderizar en paralelo n
 - **Cómo suena de verdad:** no puedo escuchar. Medí loudness, picos, secciones y lo que entiende Whisper, pero la calidad musical,
   lo natural de la voz y si los efectos sintetizados (multitud, gritos) suenan creíbles los tiene que juzgar un oído humano.
 - **Pronunciación de Blücher:** escribí "Blooker"; Whisper oye "Blucker/Booker". El subtítulo dice "Blücher".
-- **"flank"** en la mezcla: Whisper oye "flat" aunque en la voz sola se entiende.
+- **El clímax no es el momento más fuerte:** quedó entre los 5 más fuertes, a 1.3 dB del pico (el título "WATERLOO" y la descarga de mosquetes suenan un poco más). Lo medí; no lo puedo juzgar de oído.
 - **Rendimiento en TikTok:** ninguna métrica de vistas o retención; las reglas de ritmo vienen de repos de terceros, no de datos propios.
 - **Cifras de ingresos** de los posts ($600–3,000/mes, millones de vistas): sin pruebas.
 - **Repos de @theoxmotion** (3) y los formatos 1–5 y 10: solo conocidos por el resumen del post.

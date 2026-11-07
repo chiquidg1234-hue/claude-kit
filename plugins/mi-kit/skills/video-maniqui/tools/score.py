@@ -140,7 +140,7 @@ for m in X["music"]:
     elif k == "silence":
         SAM["vln_trem"].note(music, a + .3, D + 24 + 7, b - a - .4, .25, .12, 0)  # casi silencio: un hilo agudo
     elif k == "payoff":
-        brass_stab(a, "Dm", 1.25, .5); timp(music, a, 1.2); bdrum(music, a, 1.1)
+        brass_stab(a, "Dm", 1.6, .6); timp(music, a, 1.5); bdrum(music, a, 1.4)
         pads(a + .5, b, "tbn", -12, .7, .45, (0, 2)); pads(a + .5, b, "cello_sus", -12, .7, .4, (0,)); pads(a + .5, b, "vln_sus", 12, .6, .3)
     elif k == "sad":
         for i, c in enumerate(["Dm", "Bb", "Gm", "A"]):
@@ -221,18 +221,18 @@ for c in X["cues"]:
     elif ty == "cannon_far": add(sfx, t, cannon(1), g * .5, pan)
     elif ty == "volley": volley(sfx, t, g, pan)
     elif ty == "volley_far": volley(sfx, t, g * .6, pan, 18, .6, 1)
-    elif ty == "volley_big": volley(sfx, t, g * .8, pan, 40, .25); add(sfx, t, hit(), g * .35)
+    elif ty == "volley_big": volley(sfx, t, g * .5, pan, 40, .3); add(sfx, t, hit(), g * .25)
     elif ty == "battle_amb":
         add(sfx, t, fades(loop_noise(dur, 60, 400, .2, .4) * 1.2, .2, .3), g)
         for k in range(int(dur * 1.5)): add(sfx, t + rng.random() * dur, cannon(1), g * .15, float(rng.uniform(-1, 1)))
     elif ty == "whoosh": w = whoosh(); add(sfx, t - .22, w, g * .55, pan)
     elif ty == "riser_short": add(sfx, t, riser(1.2), g * .5)
     elif ty == "riser_long": add(sfx, t, riser(min(dur, 3.0)), g * .5)
-    elif ty == "title_hit": add(sfx, t, hit(), g * .45, pan)
+    elif ty == "title_hit": add(sfx, t, hit(), g * .25, pan)
     elif ty == "hit": add(sfx, t, hit(), g * .6, pan)
     elif ty == "boom_soft": add(sfx, t, lp(hit(), 300), g * .6)
     elif ty == "impact": add(sfx, t, hit(), g); add(sfx, t, cannon(), g * .5)
-    elif ty == "payoff": add(sfx, t, hit(), g * 1.6); add(sfx, t, cannon(), g * .7); add(sfx, t, lp(noise(int(1.5 * SR)), 200) * env(int(1.5 * SR), .001, .6) * 2, g * .8)
+    elif ty == "payoff": add(sfx, t, hit(), g * 2.0); add(sfx, t, cannon(), g * .9); add(sfx, t, lp(noise(int(1.5 * SR)), 200) * env(int(1.5 * SR), .001, .6) * 2, g * .8)
     elif ty == "birds":
         for k in range(int(dur * 3)): add(sfx, t + rng.random() * dur, chirp(), g * .5, float(rng.uniform(-.8, .8)))
     elif ty == "march": steps(sfx, t, dur, g)
@@ -243,7 +243,7 @@ for c in X["cues"]:
     elif ty == "horse_snort": add(sfx, t, bp(noise(int(.5 * SR)), 300, 1500) * env(int(.5 * SR), .03, .12) * 1.5, g * .5, pan)
     elif ty == "horse_neigh": add(sfx, t, bp(noise(int(.3 * SR)), 200, 900) * env(int(.3 * SR), .01, .08), g * .4, pan)
     elif ty == "rain": add(sfx, t, fades(hp(noise(int(dur * SR)), 1200) * .18 + lp(noise(int(dur * SR)), 500) * .25, .3, .3), g)
-    elif ty == "thunder": add(sfx, t, thunder(), g * .9)
+    elif ty == "thunder": add(sfx, t, thunder(), g * .5)
     elif ty == "mud_push":
         for k in range(int(dur * 2)): n = int(.4 * SR); add(sfx, t + k * .5 + rng.random() * .1, lp(noise(n), 500) * env(n, .03, .1) * 1.5, g * .5, float(rng.uniform(-.5, .5)))
     elif ty in ("clock", "tick_fast"):
@@ -277,9 +277,9 @@ for name, buf in (("music", music), ("sfx", sfx), ("mix_pre", mix)):
     sf.write(EP / f"audio/{name}.wav", (buf / max(1.0, np.abs(buf).max() / .98))[: int(TOTAL * SR)], SR, subtype="PCM_24")
 # master a -14 LUFS / -1.5 dBTP (loudnorm de ffmpeg en dos pasadas)
 pre = str(EP / "audio/mix_pre.wav"); out = str(EP / "audio/master.wav")
-r = subprocess.run(["ffmpeg", "-hide_banner", "-i", pre, "-af", "loudnorm=I=-14:TP=-1.5:LRA=11:print_format=json", "-f", "null", "-"], capture_output=True, text=True).stderr
+r = subprocess.run(["ffmpeg", "-hide_banner", "-i", pre, "-af", "loudnorm=I=-14:TP=-2.5:LRA=11:print_format=json", "-f", "null", "-"], capture_output=True, text=True).stderr
 m = json.loads(r[r.rindex("{"): r.rindex("}") + 1])
-af = f"loudnorm=I=-14:TP=-1.5:LRA=11:measured_I={m['input_i']}:measured_TP={m['input_tp']}:measured_LRA={m['input_lra']}:measured_thresh={m['input_thresh']}:offset={m['target_offset']}:linear=true"
+af = f"loudnorm=I=-14:TP=-2.5:LRA=11:measured_I={m['input_i']}:measured_TP={m['input_tp']}:measured_LRA={m['input_lra']}:measured_thresh={m['input_thresh']}:offset={m['target_offset']}:linear=true"
 subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", pre, "-af", af, "-ar", "48000", out], check=True)
 open(EP / "audio/CREDITS.txt", "w").write("Samples (CC0 1.0): Versilian Studios VSCO 2 CE (github.com/sgossner/VSCO-2-CE) — cellos, violines, trompa, trombón, tuba, timbales, bombo y caja.\n"
     "Efectos (cañones, mosquetes, cascos, pasos, multitud, viento, lluvia, olas, latidos, whooshes, risers, golpes): sintetizados en código (score.py).\n"
