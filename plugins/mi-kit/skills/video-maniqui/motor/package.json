@@ -1,10 +1,11 @@
 {
-  "name": "video-maniqui",
+  "name": "video-maniqui-motor",
   "private": true,
   "type": "module",
   "dependencies": {
     "three": "0.170.0",
     "@fontsource/montserrat": "5.1.0",
-    "@fontsource/playfair-display": "5.1.0"
+    "@fontsource/playfair-display": "5.1.0",
+    "playwright": "1.63.0"
   }
 }

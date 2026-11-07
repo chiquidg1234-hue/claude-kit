@@ -1,0 +1,19 @@
+{
+ "title": "Waterloo",
+ "voice": {"engine": "kokoro", "voice": "am_michael", "lang": "en-us", "speed": 1.12},
+ "lead": 0.25,
+ "tail": 2.4,
+ "lines": [
+  {"id": "hook",    "say": "Nearly fifty thousand men were killed or wounded here. In a single day.", "cap": "Nearly 50,000 men were killed or wounded here. In a single day.", "pause": 0.35},
+  {"id": "date",    "say": "June eighteenth, eighteen fifteen. Waterloo.", "cap": "June 18, 1815. Waterloo.", "pause": 0.3},
+  {"id": "nap",     "say": "Napoleon had escaped from exile and taken back France. Now he needed one big win.", "cap": "Napoleon had escaped from exile and taken back France. Now he needed one big win.", "pause": 0.3},
+  {"id": "rivals",  "say": "Against him stood the Duke of Wellington. And a Prussian army under Blooker was marching to join him.", "cap": "Against him stood the Duke of Wellington. And a Prussian army under Blücher was marching to join him.", "pause": 0.3},
+  {"id": "rain",    "say": "But it had rained all night. Napoleon waited for the mud to dry, and lost hours he would never get back.", "cap": "But it had rained all night. Napoleon waited for the mud to dry, and lost hours he would never get back.", "pause": 0.3},
+  {"id": "cavalry", "say": "His cavalry charged the British squares again and again. Not one square broke.", "cap": "His cavalry charged the British squares again and again. Not one square broke.", "pause": 0.3},
+  {"id": "prussia", "say": "Then, in the afternoon, the Prussians slammed into his flank.", "cap": "Then, in the afternoon, the Prussians slammed into his flank.", "pause": 0.3},
+  {"id": "guard",   "say": "Napoleon sent in his last reserve. The Imperial Guard. They marched up the ridge, straight into a wall of musket fire.", "cap": "Napoleon sent in his last reserve. The Imperial Guard. They marched up the ridge, straight into a wall of musket fire.", "pause": 0.8},
+  {"id": "cry",     "say": "And a cry spread through the French army. The Guard is retreating!", "cap": "And a cry spread through the French army: \"The Guard is retreating!\"", "pause": 0.45},
+  {"id": "exile",   "say": "Four days later, Napoleon gave up his throne. He died in exile, on Saint Helena.", "cap": "Four days later, Napoleon gave up his throne. He died in exile, on Saint Helena.", "pause": 0.4},
+  {"id": "cta",     "say": "So who really won Waterloo? Wellington, or Blooker?", "cap": "So who really won Waterloo? Wellington, or Blücher?", "pause": 0.0}
+ ]
+}

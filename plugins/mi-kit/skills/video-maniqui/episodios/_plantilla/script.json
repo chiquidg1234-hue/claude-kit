@@ -1,0 +1,11 @@
+{
+ "title": "Mi episodio",
+ "voice": {"engine": "kokoro", "voice": "am_michael", "lang": "en-us", "speed": 1.12},
+ "lead": 0.25,
+ "tail": 2.0,
+ "lines": [
+  {"id": "hook", "say": "One sentence that makes people stop scrolling.", "cap": "One sentence that makes people stop scrolling.", "pause": 0.3},
+  {"id": "body", "say": "What happened, in order, with one true fact per line.", "cap": "What happened, in order, with one true fact per line.", "pause": 0.3},
+  {"id": "cta",  "say": "So, which side are you on?", "cap": "So, which side are you on?", "pause": 0.0}
+ ]
+}
