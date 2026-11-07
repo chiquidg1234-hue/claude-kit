@@ -52,7 +52,7 @@ export function buildEpisode(E, WORDS) {
       block(0, 13, 4, 24, 1.2, 1.3, (x, z, i) => ({ x, z, ry: Math.PI, team: 'gb', hat: 'shako', musket: 'shoulder', t, id: 500 + i })).forEach(figure);
       for (let i = 0; i < 6; i++) cannon({ x: -12 + i * 4.5, z: -20, ry: 0, fire: [.3 + hash(i) * 1.5], t, id: 10 + i });
       for (let i = 0; i < 40; i++) puff(-25 + hash(i) * 50, 1, -25 + hash(i + 7) * 55, 1.5 + t + hash(i + 3) * 3, 3, 600 + i);
-      const k = easeOut(t / d); E.camera(lerp(4, 8, k), lerp(5, 30, k), lerp(26, 28, k), 0, 0, -2, 40, null, T); } });
+      const k = easeOut(t / d); E.camera(lerp(3, 6, k), lerp(4, 19, k), lerp(24, 25, k), 0, 0, -3, 40, null, T); } });
   // 4. Título: amanecer, trigo, ejército francés en la cresta
   shot('title', lineA('date') - 0.1, { look: 'dawn', trans: 'flash', sfx: [[0, 'riser_short', .5, 0], [wt('date', 'waterloo') - lineA('date') + 0.1, 'title_hit', 1.0, 0], [0, 'birds', .4, 0]],
     fn: (t, d, T) => { E.env({ farm: false }); E.setWheat(0, 6, 30, 16, T);
