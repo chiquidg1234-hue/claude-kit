@@ -19,3 +19,9 @@ Escalada: cuenta atrás → destello → pulso de calor → silencio → se ve v
 Supuestos simplificados: bola de fuego de ~0.9 km de radio; altura de explosión 3 km.
 
 Ver [[No verificado]].
+
+## Resultado medido
+- 51.5 s, 1080×1920, 30 fps, 1545 frames (~40 min de render con GPU por software).
+- Archivos: `nuclear_whatif_ligero.mp4` (14 MB) y `nuclear_whatif_HQ.mp4` (274 MB).
+- Audio: −14.4 LUFS, pico −2.1 dBFS (MP4). Sección más fuerte = la onda (−12.9 dB RMS); calor −21, espera −17, final −19.5.
+- Antes del arreglo la onda quedaba **por debajo** de la nube: el pico tan grande hacía que loudnorm pasara a modo dinámico → se añadió un limitador suave.

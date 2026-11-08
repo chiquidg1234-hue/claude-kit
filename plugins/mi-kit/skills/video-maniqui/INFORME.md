@@ -122,3 +122,6 @@ transcripción (faster-whisper small.en) y loudness (ebur128).
 Prueba: **"What if a nuclear bomb went off 6 miles away?"** (51.5 s, sin voz), con `motor/whatif.html` + `episodios/nuclear`.
 Datos: Glasstone & Dolan (frente de 1 Mt a ~5.1 km a 11 s y ~15.3 km a 37 s → ~23 s a 10 km), NUKEMAP (3er grado hasta ~13 km con 1.2 Mt),
 FAS 2026 (~12,187 cabezas → "about 12,000"). Notas para Obsidian en `/obsidian` del repo.
+
+Resultado: 51.5 s, −14.4 LUFS, pico −2.1 dBFS en el MP4; la onda es la sección más fuerte (−12.9 dB RMS) tras añadir un limitador
+suave (sin él, loudnorm pasaba a modo dinámico y el clímax quedaba por debajo de la música de la nube).
