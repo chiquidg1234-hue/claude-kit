@@ -147,9 +147,25 @@ for m in X["music"]:
             t = a + i * (b - a) / 4; d = (b - a) / 4
             for v in (0, 1, 2): SAM["cello_sus"].note(music, t, D - 12 + CH[c][v], d, .55, .4, 0)
             SAM["horn"].note(music, t, D + CH[c][2], d, .5, .35, .2)
+    elif k == "calm":  # ciudad tranquila: acorde suave en violines + chelo
+        pads(a, b + .6, "vln_sus", 12, .35, .25, (0, 2)); SAM["cello_sus"].note(music, a, D - 12, b - a + .6, .4, .25)
+    elif k == "drone":  # tras el destello: un hilo grave que no resuelve
+        SAM["cello_trem"].note(music, a + .4, D - 12, b - a, .45, .35); SAM["vln_trem"].note(music, a + 1.5, D + 24 + 1, b - a - 1.5, .25, .08)
+    elif k == "dread":  # espera de la onda: tensión creciente que corta en seco
+        pads(a, b, "vln_trem", 12, .55, .3, (0, 1)); SAM["cello_trem"].note(music, a, D - 12 + 1, b - a, .6, .4); SAM["tuba"].note(music, a + 2, D - 24, b - a - 2, .6, .3)
+        troll(music, b - 2.5, 2.5, .8)
+    elif k == "end":
+        SAM["cello_sus"].note(music, a, D - 12, b - a, .5, .35); SAM["horn"].note(music, a + .4, D + 3, b - a - .4, .4, .25)
     elif k == "question":
         pads(a, b, "vln_trem", 12, .55, .32); SAM["cello_trem"].note(music, a, D - 12, b - a, .6, .3); troll(music, b - 2.2, 2.0, .9)
         timp(music, b - .2, 1.0); bdrum(music, b - .2, .8)
+
+# ganancia opcional por sección ("gain" en MUSIC, por defecto 1) con fundido de 0.4 s
+if any("gain" in m for m in X["music"]):
+    gcurve = np.ones(N, np.float32)
+    for m in X["music"]:
+        if "gain" in m: gcurve[int(m["a"] * SR): int(m["b"] * SR) + int(.6 * SR)] = m["gain"]
+    k = int(.4 * SR); gcurve = np.convolve(gcurve, np.ones(k) / k, "same").astype(np.float32); music *= gcurve[:, None]
 
 # ---------- efectos sintetizados ----------
 def cannon(dist=0):
@@ -215,6 +231,29 @@ def heartbeat(buf, t, dur, g):
         for o, a in ((0, 1), (.22, .7)): n = int(.25 * SR); x = np.arange(n) / SR; add(buf, tt + o, np.sin(2 * np.pi * 48 * x) * env(n, .005, .07) * a, g)
         tt += .85
 
+def tinnitus(dur=6.0):
+    n = int(dur * SR); x = np.arange(n) / SR; return (np.sin(2 * np.pi * 6200 * x) * .12 * np.exp(-x / 2.2) * np.minimum(x / .05, 1)).astype(np.float32)
+def blast():  # onda de choque lejana: crack seco + golpe subgrave + rugido largo
+    n = int(7 * SR); x = np.arange(n) / SR
+    crack = hp(noise(n), 900) * env(n, .0005, .03) * 1.4
+    sub = np.sin(2 * np.pi * (30 + 50 * np.exp(-x / .08)) * x) * env(n, .003, .9) * 1.6
+    roar = lp(noise(n), 500) * env(n, .02, 2.2) * 2.6 + bp(noise(n), 500, 3000) * env(n, .01, .8) * .8
+    return (crack + sub + roar).astype(np.float32)
+def glass_burst(buf, t, dur, g):
+    for k in range(int(dur * 260)):
+        tt = t + (rng.random() ** 2) * dur; m = int(.06 * SR); x = np.arange(m) / SR; f = rng.uniform(3000, 9000)
+        tink = (np.sin(2 * np.pi * f * x) * .5 + hp(noise(m), 4000) * .6) * np.exp(-x / rng.uniform(.008, .04))
+        add(buf, tt, tink.astype(np.float32), g * .12 * (1 - (tt - t) / dur * .7), float(rng.uniform(-1, 1)))
+def car_alarm(dur):
+    n = int(dur * SR); x = np.arange(n) / SR; f = np.where((x * 2.2) % 1 < .5, 900, 1250)
+    y = np.sign(np.sin(2 * np.pi * np.cumsum(f) / SR)).astype(np.float32) * .12; return lp(y, 3500) * np.minimum(x / .05, 1)
+def siren(dur):
+    n = int(dur * SR); x = np.arange(n) / SR; f = 750 + 450 * (0.5 + 0.5 * np.sin(2 * np.pi * x / 3.2))
+    return (lp(np.sin(2 * np.pi * np.cumsum(f) / SR).astype(np.float32), 2500) * .25 * np.minimum(x / 1.5, 1)).astype(np.float32)
+def fire_crackle(buf, t, dur, g):
+    add(buf, t, fades(lp(noise(int(dur * SR)), 300) * .6, .8, .5), g)
+    for k in range(int(dur * 18)): m = int(.02 * SR); add(buf, t + rng.random() * dur, hp(noise(m), 2000) * env(m, .0005, .004) * 1.5, g * rng.uniform(.1, .4), float(rng.uniform(-1, 1)))
+
 for c in X["cues"]:
     t, ty, g, pan, end = c["t"], c["type"], c["g"], c["pan"], c["end"]; dur = max(.3, end - t)
     if ty == "cannon": add(sfx, t, cannon(), g * .9, pan)
@@ -253,6 +292,18 @@ for c in X["cues"]:
     elif ty == "wind": add(sfx, t, fades(loop_noise(dur, 200, 1200, .25, .7) * .9, .4, .4), g)
     elif ty == "heartbeat": heartbeat(sfx, t, dur, g * .9)
     elif ty == "waves": add(sfx, t, fades(loop_noise(dur, 100, 900, .12, .85) * 1.2, .5, .5), g)
+    elif ty == "city_amb": add(sfx, t, fades(loop_noise(dur, 80, 700, .1, .3) * .5, .05, .4), g)
+    elif ty == "nuke_flash": add(sfx, t, hit(), g * .9); add(sfx, t, tinnitus(), g); add(sfx, t, whoosh(.3), g * .4)
+    elif ty == "heat_roar": add(sfx, t, fades(lp(noise(int(dur * SR)), 140) * 1.4 * np.linspace(1, .4, int(dur * SR)), 1.0, 1.5), g)
+    elif ty == "blast": add(sfx, t, blast(), g * 1.1); add(sfx, t, cannon(), g * .6)
+    elif ty == "glass": glass_burst(sfx, t, min(dur, 3.0), g)
+    elif ty == "storm_wind": n = int(dur * SR); add(sfx, t, fades(loop_noise(dur, 150, 2500, .6, .5) * 1.6 * np.exp(-np.arange(n) / SR / 2.5)[:] + loop_noise(dur, 100, 900, .2, .4) * .3, .01, 1.0), g)
+    elif ty == "debris":
+        for k in range(int(dur * 14)): m = int(.12 * SR); add(sfx, t + rng.random() * dur, bp(noise(m), 300, 3000) * env(m, .001, .03) * 1.5, g * rng.uniform(.1, .4) * (1 - k / (dur * 14)), float(rng.uniform(-1, 1)))
+    elif ty == "car_alarm": add(sfx, t, fades(car_alarm(dur), .02, .5), g, pan)
+    elif ty == "siren": add(sfx, t, lp(fades(siren(dur), .5, 1.0), 1800), g, pan)
+    elif ty == "fire": fire_crackle(sfx, t, dur, g)
+    elif ty == "end_tone": add(sfx, t, lp(hit(), 200), g * .5)
     else: print("cue sin sintetizador:", ty)
 
 # ---------- reverb, ducking, mezcla ----------
@@ -260,9 +311,10 @@ def reverb(x, secs=1.4, wet=.18):
     n = int(secs * SR); ir = np.stack([noise(n) * env(n, .005, secs / 5), noise(n) * env(n, .005, secs / 5)], 1); ir = lp(ir, 5000) / np.sqrt(np.sum(ir ** 2) / 2)
     return x * (1 - wet) + np.stack([fftconvolve(x[:, c], ir[:, c])[: len(x)] for c in range(2)], 1).astype(np.float32) * wet
 music = reverb(music, 2.2, .22); sfx = reverb(sfx, 1.2, .12)
-v, vsr = sf.read(EP / "audio/voice.wav", dtype="float32")
-v = np.interp(np.arange(int(len(v) * SR / vsr)) * vsr / SR, np.arange(len(v)), v).astype(np.float32)
-voice = np.zeros((N, 2), np.float32); voice[: len(v)] = v[:N, None]
+voice = np.zeros((N, 2), np.float32); HAS_VOICE = (EP / "audio/voice.wav").exists()  # formato what-if: sin voz
+if HAS_VOICE:
+    v, vsr = sf.read(EP / "audio/voice.wav", dtype="float32")
+    v = np.interp(np.arange(int(len(v) * SR / vsr)) * vsr / SR, np.arange(len(v)), v).astype(np.float32); voice[: len(v)] = v[:N, None]
 ve = np.convolve(np.abs(voice[:, 0]), np.ones(int(.08 * SR)) / int(.08 * SR), "same"); ve = np.clip(ve / .04, 0, 1)
 # suavizado tipo compresor (ataque rápido, release lento)
 sm = np.zeros_like(ve); a_, r_ = np.exp(-1 / (.03 * SR)), np.exp(-1 / (.35 * SR)); s = 0.0
@@ -270,7 +322,7 @@ for i in range(0, len(ve), 64):
     x = ve[i]; s = (a_ if x > s else r_) ** 64 * s + (1 - (a_ if x > s else r_) ** 64) * x; sm[i: i + 64] = s
 music_d = music * (1 - .6 * sm)[:, None]; sfx_d = sfx * (1 - .6 * sm)[:, None]
 def norm(x, target_rms): r = np.sqrt(np.mean(x ** 2) + 1e-12); return x * (target_rms / r)
-mix = voice * 1.0 + norm(music_d, .045) + norm(sfx_d, .036)
+mix = voice * 1.0 + norm(music_d, .045) + norm(sfx_d, .036) if HAS_VOICE else norm(music, .05) + norm(sfx, .06)
 mix[int((TOTAL - .05) * SR):] *= 0
 (EP / "audio").mkdir(exist_ok=True)
 for name, buf in (("music", music), ("sfx", sfx), ("mix_pre", mix)):
@@ -282,6 +334,6 @@ m = json.loads(r[r.rindex("{"): r.rindex("}") + 1])
 af = f"loudnorm=I=-14:TP=-2.5:LRA=11:measured_I={m['input_i']}:measured_TP={m['input_tp']}:measured_LRA={m['input_lra']}:measured_thresh={m['input_thresh']}:offset={m['target_offset']}:linear=true"
 subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", pre, "-af", af, "-ar", "48000", out], check=True)
 open(EP / "audio/CREDITS.txt", "w").write("Samples (CC0 1.0): Versilian Studios VSCO 2 CE (github.com/sgossner/VSCO-2-CE) — cellos, violines, trompa, trombón, tuba, timbales, bombo y caja.\n"
-    "Efectos (cañones, mosquetes, cascos, pasos, multitud, viento, lluvia, olas, latidos, whooshes, risers, golpes): sintetizados en código (score.py).\n"
-    "Voz: Kokoro-82M (Apache-2.0) vía kokoro-onnx (MIT), voz am_michael.\n")
+    "Efectos (cañones, mosquetes, cascos, pasos, multitud, viento, lluvia, olas, latidos, whooshes, risers, golpes, onda de choque, vidrio, alarmas, sirena, fuego, acúfeno): sintetizados en código (score.py).\n"
+    + ("Voz: Kokoro-82M (Apache-2.0) vía kokoro-onnx (MIT), voz am_michael.\n" if HAS_VOICE else "Sin voz (formato what-if: solo texto en pantalla).\n"))
 print("ok", TOTAL, "s; pre:", m["input_i"], "LUFS")

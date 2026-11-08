@@ -1,0 +1,59 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>video-maniqui · what-if</title>
+<!-- Reproductor formato "what if": sin voz, plano continuo, contador que no para, subtítulo corto en serif cada ~4 s, tarjeta final con la pregunta.
+     El episodio (episode.js) exporta buildWhatIf(E) → { total, title, captions, hud(T), end, scene(T), music, cues } -->
+<style>
+@font-face{font-family:Serif;font-weight:400;src:url(node_modules/@fontsource/playfair-display/files/playfair-display-latin-400-normal.woff2)}
+@font-face{font-family:Serif;font-weight:400;font-style:italic;src:url(node_modules/@fontsource/playfair-display/files/playfair-display-latin-400-italic.woff2)}
+@font-face{font-family:Mont;font-weight:600;src:url(node_modules/@fontsource/montserrat/files/montserrat-latin-600-normal.woff2)}
+html,body{margin:0;width:1080px;height:1920px;overflow:hidden;background:#000}
+#c{position:absolute;inset:0;width:1080px;height:1920px}
+.ov{position:absolute;pointer-events:none}
+/* zona segura: x 60–940 (iconos a la derecha), y 250–1500 */
+#title{left:90px;right:90px;top:300px;text-align:center;font:400 74px/1.12 Serif;color:#fff;text-shadow:0 3px 18px #000c,0 0 4px #0008}
+#title em{font-style:normal;color:var(--acc,#ffd27a)}
+#hud{left:66px;top:820px;color:#fff;text-shadow:0 2px 12px #000c}
+#hud .l{font:600 25px Mont;letter-spacing:5px;text-transform:uppercase}
+#hud .v{font:400 92px/1.05 Serif;font-variant-numeric:tabular-nums;margin-top:4px}
+#hud .s{font:600 23px Mont;letter-spacing:4px;text-transform:uppercase;opacity:.85;margin-top:6px}
+#hud .x{font:600 27px Mont;letter-spacing:4px;text-transform:uppercase;margin-top:18px;color:var(--acc,#ffd27a)}
+#cap{left:80px;right:110px;top:1250px;text-align:center;font:italic 400 54px/1.2 Serif;color:#fff;text-shadow:0 3px 16px #000,0 0 3px #000}
+#end{inset:0;background:#0c0c0d;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:0 110px 0 90px;box-sizing:border-box}
+#end .q{font:400 70px/1.15 Serif;color:#fff;text-align:center}
+#end .q em{font-style:normal;color:var(--acc,#ffd27a)}
+#end .s{margin-top:34px;font:600 24px/1.6 Mont;letter-spacing:4px;color:#9a9a9a;text-align:center;text-transform:uppercase}
+</style>
+<script type="importmap">{"imports":{"three":"./node_modules/three/build/three.module.js","three/addons/":"./node_modules/three/examples/jsm/"}}</script>
+</head><body>
+<canvas id="c" width="1080" height="1920"></canvas>
+<div id="title" class="ov"></div>
+<div id="hud" class="ov"><div class="l"></div><div class="v"></div><div class="s"></div><div class="x"></div></div>
+<div id="cap" class="ov"></div>
+<div id="end" class="ov"><div class="q"></div><div class="s"></div></div>
+<script type="module">
+import { createEngine, clamp01, easeOut } from './engine.js';
+import { buildWhatIf } from './episode.js';
+const E = createEngine(document.getElementById('c'));
+const EP = buildWhatIf(E);
+const $ = s => document.querySelector(s);
+const fadeIO = (T, a, b, fi = .25, fo = .3) => Math.min(a <= 0 ? 1 : clamp01((T - a) / fi), clamp01((b - T) / fo));
+function txt(el, html, op, ty = 0) { if (el._t !== html) { el.innerHTML = html; el._t = html; } el.style.opacity = op; el.style.transform = `translateY(${ty}px)`; }
+if (EP.accent) document.body.style.setProperty('--acc', EP.accent);
+window.EXPORT = () => ({ total: EP.total, shots: [{ id: 'take', at: 0, end: EP.total, trans: 'cut' }], music: EP.music,
+  cues: EP.cues.map(([t, type, g, pan, end]) => ({ t, type, g, pan: pan || 0, shot: 'take', end: end ?? EP.total })),
+  phrases: EP.captions.map(c => ({ a: c.a, b: c.b, text: c.text })) });
+window.seek = (T) => {
+  E.begin(); const R = EP.scene(T) || {}; E.end();
+  E.render(T, { flash: R.flash || 0, fade: R.fade || 0, bloom: R.bloom ?? .45, grain: R.grain ?? .045, vig: R.vig ?? .5, ca: R.ca ?? .0015, whipX: R.whipX || 0 });
+  const ti = EP.title; txt($('#title'), ti.text, R.hideText ? 0 : fadeIO(T, ti.a, ti.b, .01, .4));
+  const c = EP.captions.find(c => T >= c.a && T < c.b);
+  txt($('#cap'), c ? c.text : '', c && !R.hideText ? fadeIO(T, c.a, c.b, .22, .3) : 0, c ? (1 - easeOut((T - c.a) / .35)) * 14 : 0);
+  const h = EP.hud(T); const hud = $('#hud');
+  if (h && !R.hideText) { hud.style.opacity = h.op ?? 1; txt(hud.children[0], h.label, 1); txt(hud.children[1], h.value, 1); txt(hud.children[2], h.sub || '', 1); txt(hud.children[3], h.extra || '', h.extra ? 1 : 0); }
+  else hud.style.opacity = 0;
+  const e = EP.end; const ke = clamp01((T - e.a) / .5); const end = $('#end');
+  end.style.opacity = ke; if (ke > 0) { txt(end.children[0], e.text, 1); txt(end.children[1], e.sub, clamp01((T - e.a - 1.2) / .6)); }
+};
+await document.fonts.load('400 70px Serif'); await document.fonts.load('italic 400 54px Serif'); await document.fonts.load('600 24px Mont');
+window.E = E; window.ready = true;
+</script></body></html>

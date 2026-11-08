@@ -105,3 +105,20 @@ que no se sabe si van o vienen (se añadió una nariz); renderizar en paralelo n
 - **Repos de @theoxmotion** (3) y los formatos 1–5 y 10: solo conocidos por el resumen del post.
 - **Videos de YouTube/TikTok** citados: no los vi (instrucción del usuario).
 - **Windows:** el pipeline v2 solo está probado en Linux.
+
+---
+
+# Sesión 3 (2026-11-08): 3 TikToks y formato what-if
+
+Con tu permiso, descargué los 3 videos con yt-dlp (como datos: solo ffmpeg/Whisper, nada ejecutado) y los "vi" por hojas de contacto (1 frame cada 2 s),
+transcripción (faster-whisper small.en) y loudness (ebur128).
+
+| Video | Métricas públicas | Qué es | Lo mejor para copiar (la receta, no el video) |
+|---|---|---|---|
+| lunarcheeseee — What if the Earth stopped spinning? | 30.2M vistas, 3.6M likes, 80 s | 1 plano desde un balcón, gente low-poly | **Sin voz**; contador "EARTH'S SPIN 1,037 mph" que baja todo el video; frase serif cada 4–6 s; escalada; tarjeta final con la pregunta; LRA 18 LU (silencio → caos) |
+| man_ia_c — What if electrons disappeared for 5 s? | 18.7M vistas, 2.2M likes, 80 s, 576 px | plano continuo que viaja | **Sin voz**; "ELECTRONS RETURN IN 0:04.913" + "TIME SLOWED DOWN 11×"; cambio de estilo (realista → wireframe) como escalada; palabra clave en color |
+| vibecodingiseasy — Cómo se hacen los what-if | 336K vistas, 135 s, con voz | tutorial con Claude Code | Pregunta en 0–2 s, un número que corre, frase cada pocos s, cada paso peor, ciencia real ("los comentarios van a comprobar"), **una imagen por frase antes del render** |
+
+Prueba: **"What if a nuclear bomb went off 6 miles away?"** (51.5 s, sin voz), con `motor/whatif.html` + `episodios/nuclear`.
+Datos: Glasstone & Dolan (frente de 1 Mt a ~5.1 km a 11 s y ~15.3 km a 37 s → ~23 s a 10 km), NUKEMAP (3er grado hasta ~13 km con 1.2 Mt),
+FAS 2026 (~12,187 cabezas → "about 12,000"). Notas para Obsidian en `/obsidian` del repo.

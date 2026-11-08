@@ -16,6 +16,6 @@ await page.waitForFunction('window.ready===true', null, { timeout: 120000 });
 const OUT = process.env.OUT || 'frames'; fs.mkdirSync(OUT, { recursive: true });
 if (mode === 'export') { fs.writeFileSync('export.json', JSON.stringify(await page.evaluate(() => window.EXPORT()), null, 1)); console.log('export.json'); }
 else if (mode === 'test') { for (const t of args) { const t0 = Date.now(); await page.evaluate(x => window.seek(x), +t); await page.screenshot({ path: `${OUT}/test_${t}.jpg`, type: 'jpeg', quality: 85 }); console.log('t', t, Date.now() - t0, 'ms'); } }
-else { const w = JSON.parse(fs.readFileSync('words.json')); const fps = 30, N = Math.ceil(w.total * fps); const a = +(args[0] || 0), b = Math.min(N, +(args[1] || N)); const t0 = Date.now();
+else { const total = fs.existsSync('words.json') ? JSON.parse(fs.readFileSync('words.json')).total : await page.evaluate(() => window.EXPORT().total); const fps = 30, N = Math.ceil(total * fps); const a = +(args[0] || 0), b = Math.min(N, +(args[1] || N)); const t0 = Date.now();
   for (let f = a; f < b; f++) { const out = `${OUT}/f${String(f).padStart(5, '0')}.jpg`; if (fs.existsSync(out)) continue; await page.evaluate(x => window.seek(x), f / fps); await page.screenshot({ path: out, type: 'jpeg', quality: 92 }); if (f % 30 === 0) console.log(f, '/', b, ((Date.now() - t0) / 1000).toFixed(0) + 's'); } }
 await browser.close(); srv.kill();

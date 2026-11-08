@@ -182,7 +182,7 @@ export function createEngine(canvas) {
     if (mk === 'port') { R.sh[1].rotation.set(-0.5, 0, .1); R.el[1].rotation.set(-1.2, 0, -.6); R.sh[0].rotation.set(-0.7, 0, -.1); R.el[0].rotation.set(-1.3, 0, .7); R.musket.position.set(0, .05, .25); R.musket.rotation.set(0, 0, 0.9); }
     if (mk === 'charge') { R.sh[1].rotation.set(-0.9, 0, -.1); R.el[1].rotation.set(-0.9, 0, 0); R.sh[0].rotation.set(-1.25, 0, .3); R.el[0].rotation.set(-.3, 0, 0); R.musket.position.set(.05, .05, .45); R.musket.rotation.set(1.35, 0, 0); }
     if (mk === 'aim') { R.sh[1].rotation.set(-1.4 + rk * .35, 0, -.1); R.el[1].rotation.set(-.5, 0, 0); R.sh[0].rotation.set(-1.45 + rk * .3, 0, .55); R.el[0].rotation.set(-.15, 0, 0); R.musket.position.set(.03, .32, .55 - rk * .12); R.musket.rotation.set(Math.PI / 2 + rk * .35, 0, 0); R.head.rotation.set(.12, 0.25, 0); }
-    const T = TEAM[p.team || 'wood'];
+    const T = p.colors || TEAM[p.team || 'wood']; // colors: {coat, legs, belt} (THREE.Color) para ropa moderna
     put('pelvis', R.pelvisM, T.legs); put('chest', R.chestM, T.coat); put('neck', R.neckM); put('head', R.headM); put('nose', R.nose);
     for (const sd of [0, 1]) { put('uarm', R.uaM[sd], T.coat); put('farm', R.faM[sd]); put('hand', R.handM[sd]); put('thigh', R.thM[sd], T.legs); put('shin', R.shM[sd]); put('foot', R.footM[sd]);
       for (const j of [R.sh[sd], R.el[sd], R.hip[sd], R.kn[sd]]) put('joint', j, null, [.07, .07, .07]);
@@ -250,7 +250,7 @@ export function createEngine(canvas) {
           vec3 c=vCol*mix(amb,sunCol,lit)*(.75+.35*t.r); float f=smoothstep(fogNear,fogFar,vFog); c=mix(c,fogColor,f); gl_FragColor=vec4(c,t.a*vOp*3.2); }` });
     const m = new THREE.InstancedMesh(geo, mat, n); m.frustumCulled = false; m.renderOrder = additive ? 11 : 10; scene.add(m); return { m, data, col, n: 0, cap: n };
   }
-  const smoke = billboardLayer(2600, false), glow = billboardLayer(900, true);
+  const smoke = billboardLayer(4000, false), glow = billboardLayer(2400, true);
   const pm = new THREE.Matrix4(), pq = new THREE.Quaternion();
   function emit(L, x, y, z, size, op, rot, seedv, r, g, b) { if (L.n >= L.cap) return; pm.compose(V(x, y, z), pq, V(size, size, size)); L.m.setMatrixAt(L.n, pm); L.data.setXYZW(L.n, op, rot, 0, seedv); L.col.setXYZ(L.n, r, g, b); L.n++; }
   // nube de humo envejeciendo: age en s
@@ -343,5 +343,8 @@ export function createEngine(canvas) {
   function project(x, y, z) { const v = V(x, y, z).project(cam); return [(v.x + 1) / 2 * W, (1 - v.y) / 2 * H, v.z < 1]; }
   // formación: filas x columnas centradas en cx,cz
   function block(cx, cz, rows, cols, dx, dz, fn) { const out = []; for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) { const i = r * cols + c; const o = fn(cx + (c - (cols - 1) / 2) * dx + (hash(i * 3.1 + cx) - .5) * 0.22, cz + r * dz + (hash(i * 7.7 + cz) - .5) * 0.22, i, r, c); if (o) out.push(o); } return out; }
-  return { passes: { bokeh, bloom, grade, composer }, THREE, renderer, scene, cam, hgt, figure, horse, cannon, flag, puff, dust, spark, muzzle, setRain, setWheat, kick, fovPunch, look, env, camera, render, begin, end, project, block, island, sea, farm, M };
+  // billboards genéricos (formato what-if: nubes enormes, fragmentos de vidrio, brasas)
+  const smokeAt = (x, y, z, size, op, rot, seedv, r, g, b) => emit(smoke, x, y, z, size, op, rot, seedv, r, g, b);
+  const glowAt = (x, y, z, size, op, r, g, b) => emit(glow, x, y, z, size, op, 0, 0, r, g, b);
+  return { sky, ground, trees, sun, hemi, smokeAt, glowAt, passes: { bokeh, bloom, grade, composer }, THREE, renderer, scene, cam, hgt, figure, horse, cannon, flag, puff, dust, spark, muzzle, setRain, setWheat, kick, fovPunch, look, env, camera, render, begin, end, project, block, island, sea, farm, M };
 }
