@@ -242,9 +242,9 @@ export function buildWhatIf(E) {
     [42.6, 46.2, 'And this was just one bomb.'],
   ].map(([a, b, text]) => ({ a, b, text }));
   const tImpact = 21.0;
-  const music = [{ a: 0, b: T_FLASH, kind: 'calm', i: .6, gain: .3 }, { a: T_FLASH, b: 14.4, kind: 'drone', i: .6, gain: .55 }, { a: 14.4, b: tImpact, kind: 'dread', i: .7, gain: 1 },
-    { a: 29, b: 46.6, kind: 'sad', i: .7, gain: .45 }, { a: 47, b: TOTAL, kind: 'end', i: .6, gain: .45 }];
-  const cues = [[0, 'city_amb', .3, 0, T_FLASH], [0, 'birds', .3, 0, T_FLASH], [T_FLASH, 'nuke_flash', 1, 0], [T_FLASH + .3, 'heat_roar', .45, 0, 14.4],
+  const music = [{ a: 0, b: T_FLASH, kind: 'calm', i: .6, gain: .5 }, { a: T_FLASH, b: 14.4, kind: 'drone', i: .6, gain: .9 }, { a: 14.4, b: tImpact, kind: 'dread', i: .7, gain: 1 },
+    { a: 29, b: 46.6, kind: 'sad', i: .7, gain: .3 }, { a: 47, b: TOTAL, kind: 'end', i: .6, gain: .35 }];
+  const cues = [[0, 'city_amb', .6, 0, T_FLASH], [0, 'birds', .3, 0, T_FLASH], [T_FLASH, 'nuke_flash', 1, 0], [T_FLASH + .3, 'heat_roar', .9, 0, 14.4],
     [4.2, 'crowd_panic', .5, 0, 8], [14.4, 'heartbeat', .8, 0, tImpact], [17.6, 'riser_long', .9, 0, tImpact], [tImpact - .05, 'whoosh', 1, 0],
     [tImpact, 'blast', 2.6, 0], [tImpact + .05, 'glass', 1.6, 0, tImpact + 3], [tImpact, 'storm_wind', 1, 0, 29], [tImpact + .4, 'debris', .9, 0, 26],
     [22.6, 'car_alarm', .5, -.4, 33], [23.4, 'car_alarm', .4, .5, 31], [25.2, 'crowd_panic', .45, 0, 28], [29, 'wind', .45, 0, 33.5],

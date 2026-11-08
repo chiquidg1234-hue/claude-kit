@@ -324,6 +324,15 @@ music_d = music * (1 - .6 * sm)[:, None]; sfx_d = sfx * (1 - .6 * sm)[:, None]
 def norm(x, target_rms): r = np.sqrt(np.mean(x ** 2) + 1e-12); return x * (target_rms / r)
 mix = voice * 1.0 + norm(music_d, .045) + norm(sfx_d, .036) if HAS_VOICE else norm(music, .05) + norm(sfx, .06)
 mix[int((TOTAL - .05) * SR):] *= 0
+# limitador suave (look-ahead 5 ms): si el pico supera ~12 dB sobre el RMS, loudnorm pasa a modo dinámico y aplana el clímax
+def limiter(x, crest_db=12.0):
+    thr = np.sqrt(np.mean(x ** 2)) * 10 ** (crest_db / 20); a = np.abs(x).max(1); w = int(.005 * SR)
+    pk = np.maximum.reduce([np.roll(a, -k) for k in range(0, w, 8)]); g = np.minimum(1, thr / np.maximum(pk, 1e-9))
+    r = np.exp(-1 / (.08 * SR)); out = np.empty_like(g); s_ = 1.0
+    for i in range(0, len(g), 32):
+        m_ = g[i: i + 32].min(); s_ = m_ if m_ < s_ else r ** 32 * s_ + (1 - r ** 32) * m_; out[i: i + 32] = s_
+    return x * out[:, None].astype(np.float32)
+mix = limiter(mix)
 (EP / "audio").mkdir(exist_ok=True)
 for name, buf in (("music", music), ("sfx", sfx), ("mix_pre", mix)):
     sf.write(EP / f"audio/{name}.wav", (buf / max(1.0, np.abs(buf).max() / .98))[: int(TOTAL * SR)], SR, subtype="PCM_24")
